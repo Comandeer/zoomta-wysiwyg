@@ -1,0 +1,20 @@
+{
+  "name": "zoomta-wysiwyg",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint **/*.mjs **/*.js",
+    "start": "http-server ./"
+  },
+  "keywords": [
+    "ZOOMTA"
+  ],
+  "author": "Comandeer",
+  "devDependencies": {
+    "@comandeer/eslint-config": "^0.2.2",
+    "eslint": "^6.4.0",
+    "http-server": "^0.11.1"
+  }
+}
