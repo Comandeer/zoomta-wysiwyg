@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/bootstrap.mjs",
   "scripts": {
     "lint": "eslint **/*.mjs **/*.js",
     "start": "http-server ./"

@@ -1,28 +1,20 @@
-class WYSIWYG extends HTMLElement {
-	constructor() {
-		super();
+function createWYSIWYGComponent( UIComponent ) {
+	return class WYSIWYG extends UIComponent {
+		template() {
+			const initialContent = this.innerHTML;
 
-		this.attachInternals();
-
-	}
-
-	attachInternals() {
-		const shadow = this.attachShadow( { mode: 'closed' } );
-		const initialContent = this.innerHTML;
-
-		shadow.innerHTML = `<link rel="stylesheet" href="/css/ui/WYSIWYG.css">
-		<div class="wysiwyg">
-			<toolbar->
-				<button->Bold</button->
-				<button->Code</button->
-			</toolbar->
-			<editable->
-				${ initialContent }
-			</editable->
-		</div>`;
-
-		this.shadow = shadow;
-	}
+			return `<link rel="stylesheet" href="/css/ui/WYSIWYG.css">
+			<div class="wysiwyg">
+				<toolbar->
+					<button->Bold</button->
+					<button->Code</button->
+				</toolbar->
+				<editable->
+					${ initialContent }
+				</editable->
+			</div>`;
+		}
+	};
 }
 
-export default WYSIWYG;
+export default createWYSIWYGComponent;
