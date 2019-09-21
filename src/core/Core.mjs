@@ -5,6 +5,7 @@ class Core {
 		this.sandboxFactory = Sandbox.createFactory( this );
 		this.loader = loader;
 		this.modules = new Map();
+		this.extensions = new Set();
 	}
 
 	addModule( name, path ) {
@@ -14,6 +15,28 @@ class Core {
 	addModules( modules ) {
 		modules.forEach( ( [ name, path ] ) => {
 			this.addModule( name, path );
+		} );
+	}
+
+	addExtension( path ) {
+		this.extensions.add( path );
+	}
+
+	addExtensions( extensions ) {
+		extensions.forEach( ( path ) => {
+			this.addExtension( path );
+		} );
+	}
+
+	async applyExtensions() {
+		const promises = [ ...this.extensions ].map( ( path ) => {
+			return this.loader.loadSingle( path );
+		} );
+
+		const extensions = await Promise.all( promises );
+
+		extensions.forEach( ( { default: extension } ) => {
+			extension( this, this.Sandbox );
 		} );
 	}
 

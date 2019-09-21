@@ -1,12 +1,18 @@
 function createWYSIWYGComponent( UIComponent ) {
 	return class WYSIWYG extends UIComponent {
+		constructor( ...args ) {
+			super( ...args );
+
+			this.name = this.getAttribute( 'name' );
+		}
 		template() {
 			const initialContent = this.innerHTML;
-			const name = this.getAttribute( 'name' );
+			const name = this.name;
 
 			return `<link rel="stylesheet" href="/css/ui/WYSIWYG.css">
 			<div class="wysiwyg">
 				<toolbar->
+					<button- editor="${ name }" action="save">Save</button->
 					<button- editor="${ name }" action="style:bold">Bold</button->
 					<button- editor="${ name }" action="style:code">Code</button->
 				</toolbar->
@@ -14,6 +20,18 @@ function createWYSIWYGComponent( UIComponent ) {
 					${ initialContent }
 				</editable->
 			</div>`;
+		}
+
+		attachListeners() {
+			const name = this.name;
+
+			this.on( 'ui:notification', ( { editor, content } ) => {
+				if ( editor !== name ) {
+					return;
+				}
+
+				alert( content );
+			} );
 		}
 	};
 }
