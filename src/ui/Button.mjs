@@ -29,8 +29,20 @@ function createButtonComponent( UIComponent ) {
 
 				button.setAttribute( 'aria-pressed', isPressed );
 			} );
+
+			this.addEventListener( 'click', () => {
+				this.fire( 'ui:buttonactivation', {
+					editor,
+					action,
+					isPressed: ariaToBoolean( button.getAttribute( 'aria-pressed' ) )
+				} );
+			} );
 		}
 	};
+}
+
+function ariaToBoolean( attribute ) {
+	return attribute === 'true' ? true : false;
 }
 
 export default createButtonComponent;
