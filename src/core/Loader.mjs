@@ -8,13 +8,13 @@ class Loader {
 	}
 
 	load() {
-		this._generateImports();
+		return this._generateImports();
 	}
 
 	_generateImports() {
 		const promises = [ ...this.modules ].map( ( [ moduleName, modulePath ] ) => {
 			return import( `/src/${ modulePath }.mjs` ).then( ( module ) => {
-				return this._handleImport( moduleName, module );
+				return [ moduleName, module ];
 			} );
 		} );
 

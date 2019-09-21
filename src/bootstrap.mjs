@@ -1,17 +1,18 @@
-import UILoader from './core/UILoader.mjs';
 import UISandbox from './core/UISandbox.mjs';
+import Loader from './core/Loader.mjs';
 import createUIComponent from './ui/UIComponent.mjs';
+import UICore from './core/UICore.mjs';
 
 const worker = new Worker( '/src/bootstrapWorker.mjs', {
 	type: 'module'
 }  );
-const sandboxConstructor = UISandbox.createFactory( worker, window );
-const UIComponent = createUIComponent( sandboxConstructor );
-const loader = new UILoader( UIComponent );
+const loader = new Loader();
+const core = new UICore( worker, UISandbox, loader, createUIComponent );
 
-loader.add( 'button-', 'ui/Button' );
-loader.add( 'toolbar-', 'ui/Toolbar' );
-loader.add( 'editable-', 'ui/Editable' );
-loader.add( 'wysiwyg-', 'ui/WYSIWYG' );
-
-loader.load();
+core.addModules( [
+	[ 'button-', 'ui/Button' ],
+	[ 'toolbar-', 'ui/Toolbar' ],
+	[ 'editable-', 'ui/Editable' ],
+	[ 'wysiwyg-', 'ui/WYSIWYG' ]
+] );
+core.start();

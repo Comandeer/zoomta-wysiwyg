@@ -1,8 +1,11 @@
 import WorkerSandbox from './core/WorkerSandbox.mjs';
-import WorkerLoader from './core/WorkerLoader.mjs';
+import Loader from './core/Loader.mjs';
+import WorkerCore from './core/WorkerCore.mjs';
 
-const workerSandboxFactory = WorkerSandbox.createFactory( self, self );
-const loader = new WorkerLoader( workerSandboxFactory );
+const loader = new Loader();
+const core = new WorkerCore( self, WorkerSandbox, loader );
 
-loader.add( 'EditableController', 'modules/EditableController' );
-loader.load();
+core.addModules( [
+	[ 'EditableController', 'modules/EditableController' ]
+] );
+core.start();

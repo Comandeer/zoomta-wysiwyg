@@ -1,15 +1,14 @@
 import SecurityError from './errors/SecurityError.mjs';
 
 class Sandbox {
-	constructor( target, source, module ) {
-		this.target = target;
-		this.source = source;
+	constructor( core, module ) {
+		this.core = core;
 		this.module = module;
 	}
 
-	static createFactory( target, source ) {
+	static createFactory( core ) {
 		return ( module, ...args ) => {
-			return new this( target, source, module, ...args );
+			return new this( core, module, ...args );
 		};
 	}
 
@@ -18,10 +17,7 @@ class Sandbox {
 			throw new SecurityError( `No sufficient permissions to publish ${ event } event` );
 		}
 
-		this.target.postMessage( {
-			event,
-			data
-		} );
+		this.core.fire( event, data );
 	}
 
 	on( event, callback ) {
@@ -29,13 +25,7 @@ class Sandbox {
 			throw new SecurityError( `No sufficient permissions to subscribe ${ event } event` );
 		}
 
-		this.target.addEventListener( 'message', ( { data } ) => {
-			if ( !data || typeof data !== 'object' || data.event !== event ) {
-				return;
-			}
-
-			callback( data.data );
-		} );
+		this.core.on( event, callback );
 	}
 }
 
