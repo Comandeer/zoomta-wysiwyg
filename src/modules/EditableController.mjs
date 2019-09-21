@@ -42,10 +42,6 @@ class EditableController {
 	}
 
 	_updateSelectionView( editor, { type, path } ) {
-		if ( type === 'None' ) {
-			return;
-		}
-
 		const activeStyles = path.reduce( ( styles, current ) => {
 			if ( current === 'b' ) {
 				return styles.concat( [ 'bold' ] );
