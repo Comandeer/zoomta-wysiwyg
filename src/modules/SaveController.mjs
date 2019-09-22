@@ -1,10 +1,6 @@
-class SaveController {
-	constructor( sandboxFactory ) {
-		this.sandbox = sandboxFactory( this );
+import WorkerModule from './WorkerModule.mjs';
 
-		this.attachListeners();
-	}
-
+class SaveController extends WorkerModule {
 	attachListeners() {
 		this.sandbox.on( 'ui:buttonactivation', ( { editor, action } ) => {
 			if ( action !== 'save' ) {

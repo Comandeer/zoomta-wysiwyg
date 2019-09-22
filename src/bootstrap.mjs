@@ -15,4 +15,11 @@ core.addModules( [
 	[ 'editable-', 'ui/Editable' ],
 	[ 'wysiwyg-', 'ui/WYSIWYG' ]
 ] );
-core.start();
+
+document.querySelector( '#toggler' ).addEventListener( 'click', () => {
+	if ( !core.isStarted ) {
+		return core.start();
+	}
+
+	return core.stop();
+} );

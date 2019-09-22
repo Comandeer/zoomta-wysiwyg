@@ -28,7 +28,6 @@ class Sandbox {
 
 		this.core.on( event, callback );
 		this.core.on.call( this, event, callback );
-		console.log( this.module, this.listeners );
 	}
 
 	once( event, callback ) {
@@ -48,7 +47,14 @@ class Sandbox {
 	off( event, callback ) {
 		this.core.off( event, callback );
 		this.core.off.call( this, event, callback );
-		console.log( this.module, this.listeners );
+	}
+
+	offAll() {
+		[ ...this.listeners ].forEach( ( [ event, listeners ] ) => {
+			listeners.forEach( ( listener ) => {
+				this.off( event, listener );
+			} );
+		} );
 	}
 }
 

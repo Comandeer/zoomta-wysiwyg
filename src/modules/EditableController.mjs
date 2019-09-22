@@ -1,9 +1,10 @@
-class EditableController {
-	constructor( sandboxFactory ) {
-		this.sandbox = sandboxFactory( this );
-		this.editables = new Map();
+import WorkerModule from './WorkerModule.mjs';
 
-		this.attachListeners();
+class EditableController extends WorkerModule {
+	constructor( ...args ) {
+		super( ...args );
+
+		this.editables = new Map();
 	}
 
 	attachListeners() {

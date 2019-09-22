@@ -7,14 +7,14 @@ class UICore extends Core {
 		this.UIComponent = createUIComponent( this.sandboxFactory );
 	}
 
-	async start() {
-		const modules = await this.loadModules();
+	_moduleCallback( name, { default: createComponent } ) {
+		const Component = createComponent( this.UIComponent );
 
-		modules.forEach( ( [ name, { default: createComponent } ] ) => {
-			const Component = createComponent( this.UIComponent );
-
+		if ( !customElements.get( name ) ) {
 			customElements.define( name, Component );
-		} );
+		}
+
+		return Component;
 	}
 }
 

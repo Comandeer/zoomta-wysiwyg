@@ -5,14 +5,16 @@ class Core {
 		this.sandboxFactory = Sandbox.createFactory( this );
 		this.loader = loader;
 		this.listeners = new Map();
-		this.modules = new Map();
+		this.modulesMetadata = new Map();
 		this.extensions = new Set();
+		this.extensionsApplied = false;
+		this.isStarted = false;
 
 		this.setupPubSub();
 	}
 
 	addModule( name, path ) {
-		this.modules.set( name, path );
+		this.modulesMetadata.set( name, path );
 	}
 
 	addModules( modules ) {
@@ -32,6 +34,10 @@ class Core {
 	}
 
 	async applyExtensions() {
+		if ( this.extensionsApplied ) {
+			return;
+		}
+
 		const promises = [ ...this.extensions ].map( ( path ) => {
 			return this.loader.loadSingle( path );
 		} );
@@ -41,10 +47,12 @@ class Core {
 		extensions.forEach( ( { default: extension } ) => {
 			extension( this, this.Sandbox );
 		} );
+
+		this.extensionsApplied = true;
 	}
 
 	loadModules() {
-		[ ...this.modules ].forEach( ( [ name, path ] ) => {
+		[ ...this.modulesMetadata ].forEach( ( [ name, path ] ) => {
 			this.loader.add( name, path );
 		} );
 
@@ -55,6 +63,12 @@ class Core {
 		this.target.addEventListener( 'message', ( { data } ) => {
 			if ( !data || typeof data !== 'object' ) {
 				return;
+			}
+
+			if ( data.event === 'start' ) {
+				return this.start();
+			} else if ( data.event === 'stop' ) {
+				return this.stop();
 			}
 
 			const callbacks = this.listeners.get( data.event ) || [];
@@ -93,6 +107,52 @@ class Core {
 		eventListeners.splice( callbackIndex, 1 );
 
 		this.listeners.set( event, eventListeners );
+	}
+
+	async start() {
+		if ( this.isStarted ) {
+			return;
+		}
+
+		await this.applyExtensions();
+
+		if ( !this.modules ) {
+			const loaded = await this.loadModules();
+			const modules = loaded.map( ( [ name, module ] ) => {
+				const transformedModule = this._moduleCallback( name, module );
+
+				return [ name, transformedModule ];
+			} );
+
+			this.modules = new Map( modules );
+		}
+
+		[ ...this.modules.values() ].forEach( ( module ) => {
+			if ( typeof module.start === 'function' ) {
+				module.start();
+			}
+		} );
+
+		this.fire( 'start' );
+
+		this.isStarted = true;
+	}
+
+	stop() {
+		if ( !this.isStarted ) {
+			return;
+		}
+
+		[ ...this.modules.values() ].forEach( ( module ) => {
+			if ( typeof module.stop === 'function' ) {
+				module.stop();
+			}
+		} );
+
+		this.fire( 'stop' );
+
+		this.listeners = new Map();
+		this.isStarted = false;
 	}
 }
 
