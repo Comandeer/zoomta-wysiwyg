@@ -1,15 +1,16 @@
-import WorkerSandbox from './core/WorkerSandbox.mjs';
+import WorkerSandbox from './worker/WorkerSandbox.mjs';
 import Loader from './core/Loader.mjs';
-import WorkerCore from './core/WorkerCore.mjs';
+import Core from './core/Core.mjs';
 
 const loader = new Loader();
-const core = new WorkerCore( self, WorkerSandbox, loader );
+const core = new Core( self, WorkerSandbox, loader );
 
 core.addExtensions( [
 	'core/extensions/request'
 ] );
 core.addModules( [
-	[ 'EditableController', 'modules/EditableController' ],
-	[ 'SaveController', 'modules/SaveController' ]
+	[ 'EditableController', 'worker/modules/EditableController' ],
+	[ 'SaveController', 'worker/modules/SaveController' ]
 ] );
+
 core.start();

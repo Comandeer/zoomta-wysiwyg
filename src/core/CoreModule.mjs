@@ -1,4 +1,4 @@
-class WorkerModule {
+class CoreModule {
 	constructor( sandboxFactory ) {
 		this.sandbox = sandboxFactory( this );
 	}
@@ -22,4 +22,4 @@ class WorkerModule {
 	}
 }
 
-export default WorkerModule;
+export default CoreModule;

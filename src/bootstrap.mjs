@@ -1,19 +1,15 @@
-import UISandbox from './core/UISandbox.mjs';
+import UISandbox from './ui/UISandbox.mjs';
 import Loader from './core/Loader.mjs';
-import createUIComponent from './ui/UIComponent.mjs';
-import UICore from './core/UICore.mjs';
+import Core from './core/Core.mjs';
 
 const worker = new Worker( '/src/bootstrapWorker.mjs', {
 	type: 'module'
 }  );
 const loader = new Loader();
-const core = new UICore( worker, UISandbox, loader, createUIComponent );
+const core = new Core( worker, UISandbox, loader );
 
 core.addModules( [
-	[ 'button-', 'ui/Button' ],
-	[ 'toolbar-', 'ui/Toolbar' ],
-	[ 'editable-', 'ui/Editable' ],
-	[ 'wysiwyg-', 'ui/WYSIWYG' ]
+	[ 'UIController', 'ui/modules/UIController' ]
 ] );
 
 document.querySelector( '#toggler' ).addEventListener( 'click', () => {

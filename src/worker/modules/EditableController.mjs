@@ -1,6 +1,6 @@
-import WorkerModule from './WorkerModule.mjs';
+import CoreModule from '../../core/CoreModule.mjs';
 
-class EditableController extends WorkerModule {
+class EditableController extends CoreModule {
 	constructor( ...args ) {
 		super( ...args );
 

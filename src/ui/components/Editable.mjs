@@ -1,16 +1,14 @@
 function createEditableComponent( UIComponent ) {
 	return class Editable extends UIComponent {
-		constructor( ...args ) {
-			super( ...args );
-
+		connectedCallback() {
 			this.editor = this.getAttribute( 'editor' );
 
-			setTimeout( () => {
-				this.fire( 'ui:editablecreation', {
-					editor: this.editor,
-					initialContent: this.innerHTML
-				} );
-			}, 500 );
+			this.fire( 'ui:editablecreation', {
+				editor: this.editor,
+				initialContent: this.innerHTML
+			} );
+
+			super.connectedCallback();
 		}
 
 		template() {

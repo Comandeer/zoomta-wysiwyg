@@ -1,10 +1,10 @@
 function createButtonComponent( UIComponent ) {
 	return class Button extends UIComponent {
-		constructor( ...args ) {
-			super( ...args );
-
+		connectedCallback() {
 			this.editor = this.getAttribute( 'editor' );
 			this.action = this.getAttribute( 'action' );
+
+			super.connectedCallback();
 		}
 
 		template() {

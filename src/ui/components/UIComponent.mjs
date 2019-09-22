@@ -1,9 +1,9 @@
-function createUIComponent( sandboxFactory ) {
+function createUIComponent( controller ) {
 	return class UIComponent extends HTMLElement {
 		constructor() {
 			super();
 
-			this.sandbox = sandboxFactory( this );
+			this.sandbox = controller.addInstance( this );
 			this.listeners = [];
 		}
 

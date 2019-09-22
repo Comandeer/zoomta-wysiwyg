@@ -1,4 +1,4 @@
-import Sandbox from '/src/core/Sandbox.mjs';
+import Sandbox from '../core/Sandbox.mjs';
 
 class UISandbox extends Sandbox {
 	checkPermissions( event ) {

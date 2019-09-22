@@ -1,10 +1,11 @@
 function createWYSIWYGComponent( UIComponent ) {
 	return class WYSIWYG extends UIComponent {
-		constructor( ...args ) {
-			super( ...args );
-
+		connectedCallback() {
 			this.name = this.getAttribute( 'name' );
+
+			super.connectedCallback();
 		}
+
 		template() {
 			const initialContent = this.innerHTML;
 			const name = this.name;

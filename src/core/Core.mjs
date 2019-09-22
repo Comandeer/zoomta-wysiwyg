@@ -118,10 +118,10 @@ class Core {
 
 		if ( !this.modules ) {
 			const loaded = await this.loadModules();
-			const modules = loaded.map( ( [ name, module ] ) => {
-				const transformedModule = this._moduleCallback( name, module );
+			const modules = loaded.map( ( [ name, { default: Module } ] ) => {
+				const moduleInstance =  new Module( this.sandboxFactory );
 
-				return [ name, transformedModule ];
+				return [ name, moduleInstance ];
 			} );
 
 			this.modules = new Map( modules );
