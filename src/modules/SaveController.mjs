@@ -6,20 +6,25 @@ class SaveController {
 	}
 
 	attachListeners() {
-
-		this.sandbox.on( 'ui:buttonactivation', async ( { editor, action } ) => {
+		this.sandbox.on( 'ui:buttonactivation', ( { editor, action } ) => {
 			if ( action !== 'save' ) {
 				return;
 			}
 
-			const response = await this.sandbox.request( 'save.json' );
+			this.sandbox.once( 'ui:data', async( { content } ) => {
+				const response = await this.sandbox.request( 'save.json', content );
 
-			if ( response.status === 'ok' ) {
-				this.sandbox.fire( 'ui:notification', {
-					editor,
-					content: 'Content saved'
-				} );
-			}
+				if ( response.status === 'ok' ) {
+					this.sandbox.fire( 'ui:notification', {
+						editor,
+						content: 'Content saved'
+					} );
+				}
+			} );
+
+			this.sandbox.fire( 'ui:datarequest', {
+				editor
+			} );
 		} );
 	}
 }

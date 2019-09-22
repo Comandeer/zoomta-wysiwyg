@@ -36,6 +36,10 @@ function createEditableComponent( UIComponent ) {
 				} );
 			} );
 
+			editable.addEventListener( 'input', () => {
+				fireChangeEvent( this );
+			} );
+
 			this.on( 'ui:viewupdate', ( { editor: updatedEditor, updateOperations } ) => {
 				if ( updatedEditor !== editor || !Array.isArray( updateOperations ) ) {
 					return;
@@ -55,14 +59,32 @@ function createEditableComponent( UIComponent ) {
 					}
 				} );
 
-				this.fire( 'ui:change', {
+				fireChangeEvent( this );
+			} );
+
+			this.on( 'ui:datarequest', ( { editor: requestedEditor } ) => {
+				if ( requestedEditor !== editor ) {
+					return;
+				}
+
+				this.fire( 'ui:data', {
 					editor,
-					selection: getSelectionInfo( selection, editable ),
 					content: editable.innerHTML
 				} );
 			} );
 		}
 	};
+}
+
+function fireChangeEvent( editable ) {
+	const selection = editable.shadow.getSelection();
+	const editableElement = editable.shadow.querySelector( '.editable' );
+
+	editable.fire( 'ui:change', {
+		editor: editable.editor,
+		selection: getSelectionInfo( selection, editableElement ),
+		content: editableElement.innerHTML
+	} );
 }
 
 function getSelectionInfo( selection, editable ) {

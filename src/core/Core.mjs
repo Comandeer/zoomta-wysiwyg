@@ -4,8 +4,11 @@ class Core {
 		this.Sandbox = Sandbox;
 		this.sandboxFactory = Sandbox.createFactory( this );
 		this.loader = loader;
+		this.listeners = new Map();
 		this.modules = new Map();
 		this.extensions = new Set();
+
+		this.setupPubSub();
 	}
 
 	addModule( name, path ) {
@@ -48,6 +51,20 @@ class Core {
 		return this.loader.load();
 	}
 
+	setupPubSub() {
+		this.target.addEventListener( 'message', ( { data } ) => {
+			if ( !data || typeof data !== 'object' ) {
+				return;
+			}
+
+			const callbacks = this.listeners.get( data.event ) || [];
+
+			callbacks.forEach( ( callback ) => {
+				callback( data.data );
+			} );
+		} );
+	}
+
 	fire( event, data ) {
 		this.target.postMessage( {
 			event,
@@ -56,13 +73,26 @@ class Core {
 	}
 
 	on( event, callback ) {
-		this.target.addEventListener( 'message', ( { data } ) => {
-			if ( !data || typeof data !== 'object' || data.event !== event ) {
-				return;
-			}
+		const eventListeners = this.listeners.get( event ) || [];
 
-			callback( data.data );
+		eventListeners.push( callback );
+
+		this.listeners.set( event, eventListeners );
+	}
+
+	off( event, callback ) {
+		const eventListeners = this.listeners.get( event ) || [];
+		const callbackIndex = eventListeners.findIndex( ( savedCallback ) => {
+			return savedCallback === callback;
 		} );
+
+		if ( callbackIndex === -1 ) {
+			return;
+		}
+
+		eventListeners.splice( callbackIndex, 1 );
+
+		this.listeners.set( event, eventListeners );
 	}
 }
 

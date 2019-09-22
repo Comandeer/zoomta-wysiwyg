@@ -1,3 +1,5 @@
+import SecurityError from  '../errors/SecurityError.mjs';
+
 function addRequestExtension( core, Sandbox ) {
 	const corePrototype = Reflect.getPrototypeOf( core );
 
@@ -12,6 +14,9 @@ function addRequestExtension( core, Sandbox ) {
 	};
 
 	Sandbox.prototype.request = function( endpoint ) {
+		if ( !this.checkPermissions( 'request', 'extension' ) ) {
+			throw new SecurityError( 'Unsufficient permissions to use request extension' );
+		}
 		return this.core.request( endpoint );
 	};
 }
