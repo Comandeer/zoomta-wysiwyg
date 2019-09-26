@@ -4,7 +4,7 @@ function addRequestExtension( core, Sandbox ) {
 	const corePrototype = Reflect.getPrototypeOf( core );
 
 	corePrototype.request = function( endpoint, data ) {
-		return fetch( `/${ endpoint }`, {
+		return fetch( `/backend/${ endpoint }`, {
 			method: 'GET',
 			body: data,
 			mode: 'same-origin'
